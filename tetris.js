@@ -2,7 +2,7 @@ var tetris = {};
 
 //Draw the grid
 tetris.drawPlayField = function(){
-	for(var row=0;row<22;row++){
+	for(var row=0;row<20;row++){
 		$('#playfield').append('<tr class="'+row+'"></tr>');
 		for (var col=0;col<10;col++){
 			$('.'+row).append('<td id="'+col+'"></td>');
@@ -34,6 +34,7 @@ tetris.shapeToCoor = function(shape, origin){
 }
 
 tetris.rotate = function(){
+    var lastShape = this.currentShape;
     this.fillCells(this.currentCoor, '');
     if(this.currentShape === 'L'){
         this.currentShape = 'L90';
@@ -41,9 +42,17 @@ tetris.rotate = function(){
     else if (this.currentShape === 'L90'){
         this.currentShape = 'L';
     }
+
+    for(var i = 0; i < this.currentCoor.length; i++){
+        if(this.currentCoor[i].col > 9 || this.currentCoor[i].col <= 0){
+            this.currentShape = lastShape;
+        }
+    }
     
     this.currentCoor = this.shapeToCoor(this.currentShape, this.origin);
     this.fillCells(this.currentCoor, 'orange');
+
+
 }
 
 
@@ -78,13 +87,14 @@ tetris.move = function(direction){
         }
         else if (direction == 'down'){
             this.currentCoor[i].row++;
-            if(this.currentCoor[i].row > 21){
-                this.currentCoor[i].row = 0;
+            if(this.currentCoor[i].row > 19){
+                reverse = true;
             }
         }
         else if(direction =='up'){
             this.currentCoor[i].row--;
         }
+
 
     }
 
@@ -95,6 +105,12 @@ tetris.move = function(direction){
     else if (direction === 'left'){
         this.origin.col--;
     }
+    else if (direction ==='down'){
+        this.origin.row++;
+    }
+    else if (direction === 'up'){
+        this.origin.row--;
+    }
 
     this.fillCells(this.currentCoor, 'orange');
 
@@ -103,6 +119,9 @@ tetris.move = function(direction){
     }
     else if (reverse && direction === 'right'){
         this.move('left');
+    }
+    else if (reverse && direction === 'down'){
+        this.move('up');
     }
 
 
