@@ -14,8 +14,9 @@ tetris.drawPlayField = function(){
 
 //Variable to store current coordiates
 tetris.origin = {row:5, col:5};
-tetris.currentShape = 'L';
+tetris.currentShape = 'T';
 tetris.currentCoor;
+tetris.color = "orange";
 
 tetris.shapeToCoor = function(shape, origin){
     if(shape === 'L'){
@@ -30,6 +31,67 @@ tetris.shapeToCoor = function(shape, origin){
                 {row:origin.row, col:origin.col - 1},
                 {row:origin.row + 1, col:origin.col - 1}];
     }
+
+    else if (shape === 'T'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row - 1, col:origin.col},
+                {row:origin.row, col:origin.col - 1},
+                {row:origin.row, col:origin.col +1}]
+    }
+    else if (shape === 'T90'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row - 1, col:origin.col},
+                {row:origin.row - 2, col: origin.col},
+                {row:origin.row - 1, col:origin.col + 1}]
+    }
+    else if(shape === 'T180'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row -1, col:origin.col},
+                {row:origin.row-1, col:origin.col + 1},
+                {row:origin.row -1, col:origin.col -1}]
+    }
+    else if(shape === 'T270'){
+        return[{row:origin.row, col:origin.col},
+            {row:origin.row - 1, col:origin.col},
+            {row:origin.row - 2, col: origin.col},
+            {row:origin.row - 1, col:origin.col - 1}]
+    }
+
+    else if(shape === 'J'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row, col:origin.col -1},
+                {row:origin.row -1, col:origin.col},
+                {row:origin.row - 2, col:origin.col}]
+    }
+
+    else if(shape === 'O'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row + 1, col:origin.col},
+                {row:origin.row, col:origin.col + 1},
+                {row:origin.row + 1, col:origin.col + 1}]
+    }
+
+    else if(shape === 'S'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row, col: origin.col + 1},
+                {row:origin.row -1, col: origin.col + 1},
+                {row:origin.row - 1, col:origin.col + 2}]
+    }
+    
+    else if(shape === 'Z'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row, col:origin.col - 1},
+                {row:origin.row -1, col: origin.col -1},
+                {row:origin.row - 1, col: origin.col - 2}]
+    }
+    
+    else if(shape === 'I'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row -1, col:origin.col},
+                {row:origin.row - 2, col: origin.col},
+                {row:origin.row - 3, col:origin.col}]
+    }
+
     
 }
 
@@ -43,6 +105,20 @@ tetris.rotate = function(){
         this.currentShape = 'L';
     }
 
+    if(this.currentShape === 'T'){
+        this.currentShape = 'T90';
+    }
+    else if(this.currentShape === 'T90'){
+        this.currentShape = 'T180';
+    }
+    else if(this.currentShape === 'T180'){
+        this.currentShape = 'T270';
+    }
+    else if(this.currentShape === 'T270'){
+        this.currentShape = 'T';
+    }
+
+
     for(var i = 0; i < this.currentCoor.length; i++){
         if(this.currentCoor[i].col > 9 || this.currentCoor[i].col <= 0){
             this.currentShape = lastShape;
@@ -50,7 +126,7 @@ tetris.rotate = function(){
     }
     
     this.currentCoor = this.shapeToCoor(this.currentShape, this.origin);
-    this.fillCells(this.currentCoor, 'orange');
+    this.fillCells(this.currentCoor, this.color);
 
 
 }
@@ -65,6 +141,16 @@ tetris.fillCells = function(coordinates,fillColor){
         var $coor = $('.'+row).find('#'+col);
         $coor.attr('bgcolor',fillColor);
     }
+}
+
+tetris.spawn = function(){
+    this.origin = {row:-1, col:5};
+    var random = Math.floor(Math.random()*7);
+    var colorArray = ['blue','orange','cyan','yellow','green', 'red','purple'];
+    this.color = colorArray[random];
+    var shapeArray = ['J', 'L', 'I', 'O', 'S','Z', 'T'];
+    this.currentShape = shapeArray[random];
+    this.currentCoor = this.shapeToCoor(this.currentShape, this.origin);
 }
 
 //Move shape
@@ -112,7 +198,7 @@ tetris.move = function(direction){
         this.origin.row--;
     }
 
-    this.fillCells(this.currentCoor, 'orange');
+    this.fillCells(this.currentCoor, this.color);
 
     if(reverse && direction === 'left'){
         this.move('right');
@@ -122,6 +208,7 @@ tetris.move = function(direction){
     }
     else if (reverse && direction === 'down'){
         this.move('up');
+        this.spawn();
     }
 
 
