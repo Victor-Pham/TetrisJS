@@ -1,3 +1,27 @@
+var playfield = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+];
+
+
 var tetris = {};
 
 //Draw the grid
@@ -62,6 +86,26 @@ tetris.shapeToCoor = function(shape, origin){
                 {row:origin.row, col:origin.col -1},
                 {row:origin.row -1, col:origin.col},
                 {row:origin.row - 2, col:origin.col}]
+    }
+
+    else if (shape === 'T90'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row - 1, col:origin.col},
+                {row:origin.row - 2, col: origin.col},
+                {row:origin.row - 1, col:origin.col + 1}]
+    }
+
+    else if(shape === 'T180'){
+        return[{row:origin.row, col:origin.col},
+                {row:origin.row -1, col:origin.col},
+                {row:origin.row-1, col:origin.col + 1},
+                {row:origin.row -1, col:origin.col -1}]
+    }
+    else if(shape === 'T270'){
+        return[{row:origin.row, col:origin.col},
+            {row:origin.row - 1, col:origin.col},
+            {row:origin.row - 2, col: origin.col},
+            {row:origin.row - 1, col:origin.col - 1}]
     }
 
     else if(shape === 'O'){
@@ -144,9 +188,9 @@ tetris.fillCells = function(coordinates,fillColor){
 }
 
 tetris.spawn = function(){
-    this.origin = {row:-1, col:5};
+    this.origin = {row:20, col:5};
     var random = Math.floor(Math.random()*7);
-    var colorArray = ['blue','orange','cyan','yellow','green', 'red','purple'];
+    var colorArray = ['#0101F0','#F09F02','#01F0F1','#F0F001','#00FF01', 'F00100','A001EF'];
     this.color = colorArray[random];
     var shapeArray = ['J', 'L', 'I', 'O', 'S','Z', 'T'];
     this.currentShape = shapeArray[random];
@@ -214,14 +258,13 @@ tetris.move = function(direction){
 
 }
 
-var gravity = setInterval(function(){tetris.move('down')}, 375);
+var gravity = setInterval(function(){tetris.move('up')}, 375);
 
 
 $(document).ready(function(){
     tetris.drawPlayField();
     tetris.currentCoor = tetris.shapeToCoor(tetris.currentShape, tetris.origin);
-    tetris.fillCells(tetris.currentCoor,'orange');
-    
+    tetris.spawn();    
     $(document).keydown(function(e){
         console.log(e.keyCode);
         
@@ -236,6 +279,9 @@ $(document).ready(function(){
         }
         else if(e.keyCode === 38){
             tetris.rotate();
+        }
+        else if(e.keyCode === 32){
+            tetris.spawn();
         }
     })
 }) 

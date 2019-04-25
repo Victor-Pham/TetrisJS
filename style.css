@@ -1,5 +1,18 @@
 td {
     width: 25px;
     height: 25px;
-    border: 1px solid black;
+    border: 1px outset white;
+    box-shadow: 5px;
   }
+
+body{
+  margin:auto;
+  text-align:center;
+}
+table{
+  margin:auto;
+  text-align:center;
+  width: 290px;
+  height: 582px ;
+  border: 1px inset black;
+}
