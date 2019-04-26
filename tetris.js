@@ -184,11 +184,17 @@ tetris.fillCells = function(coordinates,fillColor){
         var col = coordinates[i].col;
         var $coor = $('.'+row).find('#'+col);
         $coor.attr('bgcolor',fillColor);
+        if(fillColor == ''){
+            $coor.attr('background', '');
+        }
+        else{
+            $coor.attr('background', 'block4.png');
+        }
     }
 }
 
 tetris.spawn = function(){
-    this.origin = {row:20, col:5};
+    this.origin = {row:-1, col:5};
     var random = Math.floor(Math.random()*7);
     var colorArray = ['#0101F0','#F09F02','#01F0F1','#F0F001','#00FF01', 'F00100','A001EF'];
     this.color = colorArray[random];
@@ -200,6 +206,7 @@ tetris.spawn = function(){
 //Move shape
 tetris.move = function(direction){
     this.fillCells(this.currentCoor, '');
+    
 
     var reverse;
     for(var i = 0; i < this.currentCoor.length; i++){
@@ -258,7 +265,7 @@ tetris.move = function(direction){
 
 }
 
-var gravity = setInterval(function(){tetris.move('up')}, 375);
+var gravity = setInterval(function(){tetris.move('down')}, 375);
 
 
 $(document).ready(function(){
