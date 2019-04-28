@@ -282,7 +282,7 @@ $(document).ready(function(){
 
 
 //autoplay
-var autoplayEnabled = true;
+var autoplayEnabled = false;
 if(autoplayEnabled){
 
 var autoplay = setInterval(function(){
