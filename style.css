@@ -1,32 +1,32 @@
 td {
-    width: auto;
-    height: auto;
-    border: 2px outset rgb(255, 255, 255);
-    padding:auto;
-  }
+  width: auto;
+  height: auto;
+  border: 2px outset rgb(255, 255, 255);
+  padding:auto;
+}
 
 body{
-  margin:auto;
-  text-align:center;
+margin:auto;
+text-align:center;
 }
 table#playfield{
-  background-color: rgba(24, 26, 27, 0.082);
-  
-  margin:auto;
-  text-align:center;
-  width: 300px; 
-  height: 640px;
-  border: 1px inset rgb(255, 255, 255);
+background-color: rgba(24, 26, 27, 0.082);
+
+margin:auto;
+text-align:center;
+width: 300px; 
+height: 640px;
+border: 1px inset rgb(255, 255, 255);
 }
 div{
-  width:40%;
-  height: 80%;
+width:40%;
+height: 80%;
 }
 h1{
-  font-family: 'Courier New', Courier, monospace;
+font-family: 'Courier New', Courier, monospace;
 }
 
 img {
-  width: 100%;
-  display: block;
+width: 100%;
+display: block;
 }

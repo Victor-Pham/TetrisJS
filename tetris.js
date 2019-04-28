@@ -274,4 +274,33 @@ $(document).ready(function(){
 		tetris.drop();
 	},500);
 
+	if(autoplayEnabled == false){
+		clearInterval(play);
+	}
+
 })
+
+
+//autoplay
+var autoplayEnabled = true;
+if(autoplayEnabled){
+
+var autoplay = setInterval(function(){
+	var play = 0;
+	play = Math.floor(Math.random() * 3 + 1);
+	if(play == 1){
+		tetris.move('left');
+		console.log('LEFT');
+	}
+	else if(play == 2){
+		tetris.move('right');
+		console.log('RIGHT');
+	}
+	else if(play == 3){
+		tetris.rotate();
+		console.log('ROTATE');
+	}
+
+
+	},500);
+}
