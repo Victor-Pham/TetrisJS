@@ -1,5 +1,5 @@
 var tetris = {};
-
+var rate = 500;
 //Draw the grid
 tetris.drawPlayField = function(){
 	for(var row=0;row<22;row++){
@@ -37,6 +37,26 @@ tetris.fillCells = function(coordinates,fillColor){
             $coor.attr('abbr', '');
         }
 	}
+}
+
+//reset
+tetris.reset = function(coordinates,fillColor){
+	
+	for (var i=21; i>=0;i--){
+
+		for (var j=0;j<10;j++){
+
+				var $newCoor = $('.'+i).find('#'+j);
+                $newCoor.attr('bgcolor', '');
+
+                    $newCoor.attr('background', '');
+                    $newCoor.attr('abbr', '');
+
+			}
+		}
+
+		tetris.spawn();
+
 }
 
 //Move current shape
@@ -173,6 +193,7 @@ tetris.drop = function(){
 		this.currentCoor[i].row++;
 		if(this.ifReverse()){
 			reverse = true;
+
 		}
 	}
 
@@ -202,11 +223,16 @@ tetris.drop = function(){
 }
 
 tetris.hardDrop = function(){
-	for(var i = 0; i < 19; i++){
+	clearInterval(gravity)
+	rate = 50;
+	console.log(rate);
+	var gravity = setInterval(function(){
 		tetris.drop();
-		if(this.ifReverse()){
-			i = 20;
-		}
+	}, rate);
+	if(this.ifReverse()){
+		clearInterval(gravity);
+		rate = 500;
+		console.log(rate);
 	}
 }
 
@@ -276,6 +302,7 @@ $(document).ready(function(){
 			tetris.rotate();
 		} else if (e.keyCode === 40){
 			tetris.drop();
+			clearInterval(autoplay);
 		}
 
 	})
@@ -294,25 +321,38 @@ $(document).ready(function(){
 		console.log('Move Left'); 
 	});
 	$('#playfield').on('swipedown', function(e) { 
-		tetris.hardDrop();
+		tetris.drop();
 
 	});
 	var gravity = setInterval(function(){
 		tetris.drop();
-	},500);
+	}, rate);
 
-	if(autoplayEnabled == false){
-		clearInterval(play);
-	}
+	$('#autoplayBtn').click(function(){
+		if(autoplayEnabled){
+			clearInterval(autoplayer)
+			autoplayEnabled = false;
+		}
+		else{
+			autoplayer = setInterval(autoplay, 500);
+			autoplayEnabled = true;
+
+		}
+		console.log(autoplayEnabled);
+		console.log(autoplay);
+	});
+
+	$('#resetBtn').click(function(){
+		tetris.reset();
+	});
+
 
 })
 
 
 //autoplay
 var autoplayEnabled = false;
-if(autoplayEnabled){
-
-var autoplay = setInterval(function(){
+autoplay = function(){
 	var play = 0;
 	play = Math.floor(Math.random() * 3 + 1);
 	if(play == 1){
@@ -329,5 +369,8 @@ var autoplay = setInterval(function(){
 	}
 
 
-	},500);
+	}
+
+if(autoplayEnabled){
+var autoplayer = setInterval(autoplay,500);
 }

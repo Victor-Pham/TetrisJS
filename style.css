@@ -30,3 +30,9 @@ img {
 width: 100%;
 display: block;
 }
+
+button{
+  margin:5px;
+  background-color: #008CBA;
+  color:white;
+}
