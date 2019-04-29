@@ -269,7 +269,29 @@ $(document).ready(function(){
 			tetris.drop();
 		}
 	})
-8
+
+	$(document).on('swiperight', function(e){
+		tetris.move('right');
+		console.log('swipe right');
+	});
+
+
+	$('#playfield').on('tap', function(e) { 
+		tetris.rotate();
+		console.log('Rotate'); 
+	});
+	$('#playfield').on('swiperight', function(e) { 
+		tetris.move('right');
+		console.log('Move Right'); 
+	});	
+	$('#playfield').on('swipeleft', function(e) { 
+		tetris.move('left');
+		console.log('Move Left'); 
+	});
+	$('#playfield').on('swipedown', function(e) { 
+		tetris.move('down');
+		console.log('Move Down'); 
+	});
 	var gravity = setInterval(function(){
 		tetris.drop();
 	},500);
