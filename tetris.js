@@ -201,6 +201,15 @@ tetris.drop = function(){
 
 }
 
+tetris.hardDrop = function(){
+	for(var i = 0; i < 19; i++){
+		tetris.drop();
+		if(this.ifReverse()){
+			i = 20;
+		}
+	}
+}
+
 //Spawn random shape
 tetris.spawn = function(){
     this.origin = {row:2, col:5};
@@ -268,12 +277,8 @@ $(document).ready(function(){
 		} else if (e.keyCode === 40){
 			tetris.drop();
 		}
-	})
 
-	$(document).on('swiperight', function(e){
-		tetris.move('right');
-		console.log('swipe right');
-	});
+	})
 
 
 	$('#playfield').on('tap', function(e) { 
@@ -289,8 +294,8 @@ $(document).ready(function(){
 		console.log('Move Left'); 
 	});
 	$('#playfield').on('swipedown', function(e) { 
-		tetris.move('down');
-		console.log('Move Down'); 
+		tetris.hardDrop();
+
 	});
 	var gravity = setInterval(function(){
 		tetris.drop();
