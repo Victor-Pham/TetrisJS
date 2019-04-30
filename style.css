@@ -19,8 +19,8 @@ height: 640px;
 border: 1px inset rgb(255, 255, 255);
 }
 div{
-width:40%;
-height: 80%;
+width:610px;
+height: 640px;
 }
 h1{
 font-family: 'Courier New', Courier, monospace;
@@ -35,4 +35,34 @@ button{
   margin:5px;
   background-color: #008CBA;
   color:white;
+}
+
+table#hold{
+  width: 150px;
+  height: 150px;
+  display:inline-block;
+  float:left;
+}
+
+table#next{
+  width: 150px;
+  height: 450px;
+  display:inline-block;
+  float:right;
+}
+
+td#gameElement{
+  width:150px;
+  height:150px;
+  background:rgba(0, 0, 0, 0.089);
+  border:outset;
+  margin:auto;
+}
+
+td#next{
+  width:150px;
+  height: 450px;
+  background:rgba(0, 0, 0, 0.089);
+  border: outset;
+  margin:auto;
 }
