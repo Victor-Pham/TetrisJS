@@ -193,11 +193,16 @@ tetris.drop = function(){
 		this.currentCoor[i].row++;
 		if(this.ifReverse()){
 			reverse = true;
+			
 
 		}
 	}
 
 	if(reverse){
+		console.log(this.origin.row);
+		if(this.origin.row <= 3){
+			tetris.reset();
+		}
 		for(var i=0;i<this.currentCoor.length;i++){
 			this.currentCoor[i].row--;
 		}
@@ -218,6 +223,8 @@ tetris.drop = function(){
 
 		this.emptyFullRow();
 		this.spawn();
+
+		
 	}
 
 }
