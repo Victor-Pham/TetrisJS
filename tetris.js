@@ -199,7 +199,6 @@ tetris.drop = function(){
 	}
 
 	if(reverse){
-		console.log(this.origin.row);
 		if(this.origin.row <= 3){
 			tetris.reset();
 		}
@@ -223,6 +222,7 @@ tetris.drop = function(){
 
 		this.emptyFullRow();
 		this.spawn();
+		bestCol = -1;
 
 		
 	}
@@ -356,7 +356,23 @@ $(document).ready(function(){
 
 	})
 
+	var gravity = setInterval(function(){
+		tetris.drop();
+	}, rate);
 
+	$('#autoplayBtn').click(function(){
+		if(autoplayEnabled){
+			clearInterval(autoplayer)
+			autoplayEnabled = false;
+			gravity = setInterval(function(){tetris.drop();}, rate);
+		}
+		else{
+			autoplayer = setInterval(autoplay, 500);
+			autoplayEnabled = true;
+
+		}
+
+	//mobile controls
 	$('#playfield').on('tap', function(e) { 
 		tetris.rotate();
 		console.log('Rotate'); 
@@ -373,22 +389,11 @@ $(document).ready(function(){
 		tetris.drop();
 
 	});
-	var gravity = setInterval(function(){
-		tetris.drop();
-	}, rate);
 
-	$('#autoplayBtn').click(function(){
-		if(autoplayEnabled){
-			clearInterval(autoplayer)
-			autoplayEnabled = false;
-		}
-		else{
-			autoplayer = setInterval(autoplay, 500);
-			autoplayEnabled = true;
 
-		}
+	
 		console.log(autoplayEnabled);
-		console.log(autoplay);
+		console.log(autoplayer);
 	});
 
 	$('#resetBtn').click(function(){
@@ -401,9 +406,28 @@ $(document).ready(function(){
 
 //autoplay
 var autoplayEnabled = false;
+var highestRating = 0;
+var bestCol = -1;
+var bestRotation;
+
+tetris.testOrigin = {row:0, col:0};
+tetris.testCoor;
+tetris.testCurrentShape = 0;
+
 autoplay = function(){
+	if(bestCol == -1){
+		tetris.generateBestMove();
+	console.log("BEST COL: " + bestCol);
+	}
+	else{
+		console.log("DONE>>> SPAWNING");
+		if(tetris.origin.col > bestCol)
+			tetris.move('left');
+		else if(tetris.origin.col < bestCol)
+			tetris.move('right');
+	}
 	var play = 0;
-	play = Math.floor(Math.random() * 3 + 1);
+	play = 0;// Math.floor(Math.random() * 3 + 1);
 	if(play == 1){
 		tetris.move('left');
 		console.log('LEFT');
@@ -418,8 +442,124 @@ autoplay = function(){
 	}
 
 
-	}
+}
 
-if(autoplayEnabled){
-var autoplayer = setInterval(autoplay,500);
+tetris.spawnTestPiece = function(col){
+	this.testOrigin = {row:5, col:col}
+	this.testCoor = this.shapeToCoor(this.currentShape, this.testOrigin);
+}
+
+tetris.setAttr = function(coordinates, attr){
+	for(var i=0;i<coordinates.length;i++){
+		var row = coordinates[i].row;
+		var col = coordinates[i].col;
+		var $coor = $('.'+row).find('#'+col);
+        $coor.attr('abbr', attr);
+
+	}
+}
+
+
+
+tetris.generateBestMove = function(){
+	//traverse through rotations/positions
+	//store location with highest moveRating
+	highestRating = 0;
+	tetris.spawnTestPiece(0);
+
+	var rating;
+	tetris.dropTest();
+	console.log("HIGHEST RATING: " + highestRating);
+
+	if(this.origin.col != bestCol){
+		tetris.move('right');
+	}
+	
+
+}
+
+getMoveRating = function(){
+	var rating = 0;	//generates rating based on average height of blocks
+	console.log(".......");
+	for (var row =21; row>=2;row--){
+		for (var col=0;col<10;col++){
+				var $coor = $('.'+row).find('#'+col);
+				if($coor.attr('bgcolor') != ''){
+					rating += row;
+			}
+		}
+	}
+	return rating;
+}
+
+//Drop shape by one row
+tetris.dropTest = function(){
+	while(this.testOrigin.col < 10){
+		if(this.testOrigin.col % 10 == 0)
+			
+		console.log("COL ::::: " + this.testOrigin.col);
+		var reverse = false;
+
+		this.fillCellsTest(this.testCoor,'');
+		this.testOrigin.row++;
+		for(var i=0;i<this.testCoor.length;i++){
+			this.testCoor[i].row++;
+			if(this.ifReverseTest()){
+				reverse = true;
+				
+
+			}
+		}
+
+		if(reverse){
+			console.log(this.testOrigin.row);
+			for(var i=0;i<this.testCoor.length;i++){
+				this.testCoor[i].row--;
+			}
+			this.testOrigin.row--;
+		}
+
+		this.fillCellsTest(this.testCoor, 'black');
+
+		if(reverse){
+			rating = getMoveRating();
+			this.fillCells(this.testCoor, '');
+
+			if(rating > highestRating){
+				highestRating = rating;
+				bestCol = this.testOrigin.col;
+			}
+			console.log("RATING: " + rating + " COL: " + bestCol);
+			this.testOrigin.col++;
+
+			this.spawnTestPiece(this.testOrigin.col);
+
+
+		}
+	}
+}
+
+
+tetris.ifReverseTest = function(){
+
+		for(var i=0;i<this.testCoor.length;i++){
+			var row = this.testCoor[i].row;
+			var col = this.testCoor[i].col;
+			var $coor = $('.'+row).find('#'+col);
+			if(row == 22 || $coor.attr('abbr') === 'block'){
+				return true;
+				
+			}
+		}
+
+	return false;
+}
+tetris.fillCellsTest = function(coordinates,fillColor){
+	for(var i=0;i<coordinates.length;i++){
+		var row = coordinates[i].row;
+		var col = coordinates[i].col;
+		var $coor = $('.'+row).find('#'+col);
+        $coor.attr('bgcolor', fillColor);
+
+	}
 }
