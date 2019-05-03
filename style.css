@@ -19,7 +19,7 @@ height: 640px;
 border: 1px inset rgb(255, 255, 255);
 }
 div{
-width:610px;
+width:510px;
 height: 640px;
 }
 h1{
@@ -38,31 +38,35 @@ button{
 }
 
 table#hold{
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   display:inline-block;
   float:left;
 }
 
 table#next{
-  width: 150px;
-  height: 450px;
+  width: 100px;
+  height: 330px;
   display:inline-block;
   float:right;
 }
 
-td#gameElement{
-  width:150px;
-  height:150px;
+td#hold{
+  width:100px;
+  height:100px;
   background:rgba(0, 0, 0, 0.089);
   border:outset;
-  margin:auto;
 }
 
 td#next{
-  width:150px;
-  height: 450px;
-  background:rgba(0, 0, 0, 0.089);
+  width:100px;
+  height: 100px;
   border: outset;
-  margin:auto;
+  background-color: rgba(0, 0, 0, 0.089);
+  background-repeat: no-repeat;
+  background-size: 80px;
+  background-position: center; 
+
+
+
 }

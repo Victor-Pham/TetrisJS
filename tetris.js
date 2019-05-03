@@ -245,13 +245,55 @@ tetris.hardDrop = function(){
 
 //Spawn random shape
 tetris.spawn = function(){
+	generateQueue();
     this.origin = {row:2, col:5};
-    var random = Math.floor(Math.random()*7);
+	var random = Math.floor(Math.random()*7);
+	var index = queue.shift();
+	console.log("INDEX: " + index);
     var colorArray = ['#0102F0','#F09F02','#01F0F1','#F0F001','#00FF01', 'F00100','A001EF'];
-    this.color = colorArray[random];
-    var shapeArray = ['J', 'L', 'I', 'O', 'S','Z', 'T'];
-    this.currentShape = shapeArray[random];
+	var shapeArray = ['J', 'L', 'I', 'O', 'S','Z', 'T'];
+	
+	this.color = colorArray[index];
+    this.currentShape = shapeArray[index];
     this.currentCoor = this.shapeToCoor(this.currentShape, this.origin);
+}
+
+var queue = [];
+var bag = [];
+
+shuffleBag = function(){
+	var bag = [0, 1, 2, 3, 4, 5, 6];
+	var shuffledBag = [];
+	var index;
+	while(bag.length != 0){
+		index = Math.floor(Math.random() * bag.length);
+		shuffledBag.push(bag[index]);
+		bag.splice(index, 1);
+	}
+
+	return shuffledBag;
+}
+generateQueue = function(){
+		if(bag.length == 0){
+			bag = shuffleBag();
+		}
+		if(queue.length == 0){
+			queue.push(bag.pop());
+			queue.push(bag.pop());
+			queue.push(bag.pop());
+
+
+		}
+
+		queue.push(bag.pop());
+
+		$('td#next.first').attr('background', 'tetromino' + queue[1] +'.png');
+		$('td#next.second').attr('background', 'tetromino' + queue[2] +'.png');
+		$('td#next.third').attr('background', 'tetromino' + queue[3] +'.png');
+
+
+	console.log("BAG: " + bag);
+	console.log("QUEUE: " + queue);
 }
 
 //If we need to reverse
