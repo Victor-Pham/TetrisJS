@@ -363,12 +363,16 @@ $(document).ready(function(){
 	$('#autoplayBtn').click(function(){
 		if(autoplayEnabled){
 			clearInterval(autoplayer)
+			clearInterval(gravity);
 			autoplayEnabled = false;
-			gravity = setInterval(function(){tetris.drop();}, rate);
+			gravity = setInterval(function(){tetris.drop();}, 400);
 		}
 		else{
-			autoplayer = setInterval(autoplay, 500);
+			autoplayer = setInterval(autoplay, 50);
 			autoplayEnabled = true;
+			clearInterval(gravity);
+			gravity = setInterval(function(){tetris.drop();}, 50);
+
 
 		}
 
@@ -417,14 +421,19 @@ tetris.testCurrentShape = 0;
 autoplay = function(){
 	if(bestCol == -1){
 		tetris.generateBestMove();
-	console.log("BEST COL: " + bestCol);
+	//console.log("BEST COL: " + bestCol);
 	}
 	else{
-		console.log("DONE>>> SPAWNING");
+		//console.log("DONE>>> SPAWNING");
 		if(tetris.origin.col > bestCol)
 			tetris.move('left');
 		else if(tetris.origin.col < bestCol)
 			tetris.move('right');
+		else{
+			if(tetris.currentShape != bestRotation){
+				tetris.rotate();
+			}
+		}
 	}
 	var play = 0;
 	play = 0;// Math.floor(Math.random() * 3 + 1);
@@ -445,7 +454,8 @@ autoplay = function(){
 }
 
 tetris.spawnTestPiece = function(col){
-	this.testOrigin = {row:5, col:col}
+	this.testOrigin = {row:0, col:col}
+	this.testCurrentShape = this.currentShape;
 	this.testCoor = this.shapeToCoor(this.currentShape, this.testOrigin);
 }
 
@@ -465,29 +475,38 @@ tetris.generateBestMove = function(){
 	//traverse through rotations/positions
 	//store location with highest moveRating
 	highestRating = 0;
-	tetris.spawnTestPiece(0);
 
 	var rating;
-	tetris.dropTest();
-	console.log("HIGHEST RATING: " + highestRating);
+	for(var i = 0; i < 4; i++){
+		tetris.spawnTestPiece(0);
 
-	if(this.origin.col != bestCol){
-		tetris.move('right');
+		tetris.dropTest();
+		tetris.rotate();
+		tetris.testCurrentShape = tetris.currentShape;
 	}
+
+	console.log("HIGHEST RATING: " + highestRating + " BEST COL: " + bestCol);
+	console.log("BEST ROTATION: " + bestRotation);
+
 	
 
 }
 
 getMoveRating = function(){
 	var rating = 0;	//generates rating based on average height of blocks
-	console.log(".......");
-	for (var row =21; row>=2;row--){
-		for (var col=0;col<10;col++){
-				var $coor = $('.'+row).find('#'+col);
-				if($coor.attr('bgcolor') != ''){
-					rating += row;
-			}
-		}
+	//console.log(".......");
+	//for (var row =21; row>=tetris.testOrigin.row - 5;row--){
+	//	for (var col=0;col<10;col++){
+	//			var $coor = $('.'+row).find('#'+col);
+	//			if($coor.attr('bgcolor') != ''){
+	//				rating += row * 100;
+	//		}
+	//	}
+	//}
+	for(var i=0;i<tetris.testCoor.length;i++){
+		rating  += tetris.testCoor[i].row;
+
+
 	}
 	return rating;
 }
@@ -495,12 +514,9 @@ getMoveRating = function(){
 //Drop shape by one row
 tetris.dropTest = function(){
 	while(this.testOrigin.col < 10){
-		if(this.testOrigin.col % 10 == 0)
 			
-		console.log("COL ::::: " + this.testOrigin.col);
 		var reverse = false;
 
-		this.fillCellsTest(this.testCoor,'');
 		this.testOrigin.row++;
 		for(var i=0;i<this.testCoor.length;i++){
 			this.testCoor[i].row++;
@@ -512,24 +528,25 @@ tetris.dropTest = function(){
 		}
 
 		if(reverse){
-			console.log(this.testOrigin.row);
+			//console.log(this.testOrigin.row);
 			for(var i=0;i<this.testCoor.length;i++){
 				this.testCoor[i].row--;
 			}
 			this.testOrigin.row--;
 		}
 
-		this.fillCellsTest(this.testCoor, 'black');
 
 		if(reverse){
+			this.fillCellsTest(this.testCoor, 'black');
 			rating = getMoveRating();
 			this.fillCells(this.testCoor, '');
 
 			if(rating > highestRating){
 				highestRating = rating;
 				bestCol = this.testOrigin.col;
+				bestRotation = this.testCurrentShape;
 			}
-			console.log("RATING: " + rating + " COL: " + bestCol);
+			//console.log("RATING: " + rating + " COL: " + bestCol);
 			this.testOrigin.col++;
 
 			this.spawnTestPiece(this.testOrigin.col);
