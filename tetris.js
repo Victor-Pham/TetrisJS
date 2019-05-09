@@ -47,8 +47,11 @@ tetris.reset = function(coordinates,fillColor){
 	
 	heldItem = '';
 	numSwaps = 0;
+	linesCleared = 0;
 
 	$('td#hold').attr('background', '');
+	$('p#linesCleared').text("Lines Cleared: ");
+
 
 	for (var i=21; i>=0;i--){
 
