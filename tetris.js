@@ -1,5 +1,5 @@
 var tetris = {};
-var rate = 500;
+var rate = 270;
 //Draw the grid
 tetris.drawPlayField = function(){
 	for(var row=0;row<22;row++){
@@ -433,7 +433,7 @@ $(document).ready(function(){
 			clearInterval(autoplayer)
 			clearInterval(gravity);
 			autoplayEnabled = false;
-			gravity = setInterval(function(){tetris.drop();}, 400);
+			gravity = setInterval(function(){tetris.drop();}, rate);
 		}
 		else{
 			autoplayer = setInterval(autoplay, 50);
