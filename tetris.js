@@ -19,6 +19,9 @@ tetris.origin = {row:2,col:5};
 tetris.currentShape = 'I';
 tetris.currentCoor;
 tetris.color;
+var heldItem;
+tetris.index;
+var linesCleared = 0;
 
 
 //Fill the cells
@@ -42,6 +45,11 @@ tetris.fillCells = function(coordinates,fillColor){
 //reset
 tetris.reset = function(coordinates,fillColor){
 	
+	heldItem = '';
+	numSwaps = 0;
+
+	$('td#hold').attr('background', '');
+
 	for (var i=21; i>=0;i--){
 
 		for (var j=0;j<10;j++){
@@ -243,12 +251,47 @@ tetris.hardDrop = function(){
 	}
 }
 
+var numSwaps = 0;
+
+tetris.hold = function(){
+	console.log("NUM SWAPS: " + numSwaps);
+	var tempitem;
+	console.log("HELD: " + heldItem);
+
+
+	if(heldItem == null){	//first hold
+		this.fillCells(this.currentCoor,'');	//clear current block
+
+		heldItem = this.index;
+		tetris.spawn();
+		//console.log("HELD ITEM: " + this.heldItem);
+	}
+	else if(numSwaps == 0){
+		this.fillCells(this.currentCoor,'');	//clear current block
+
+		tempItem = this.index;;
+		tetris.spawnHeld(heldItem);
+		heldItem = tempItem;
+		numSwaps++;
+
+	}
+
+
+
+
+	console.log("HELD INDEX: --- " + heldItem);
+	$('td#hold').attr('background', 'tetromino' + heldItem +'.png');
+
+
+}
 //Spawn random shape
 tetris.spawn = function(){
 	generateQueue();
+	numSwaps = 0;
     this.origin = {row:2, col:5};
 	var random = Math.floor(Math.random()*7);
 	var index = queue.shift();
+	this.index = index;
 	console.log("INDEX: " + index);
     var colorArray = ['#0102F0','#F09F02','#01F0F1','#F0F001','#00FF01', 'F00100','A001EF'];
 	var shapeArray = ['J', 'L', 'I', 'O', 'S','Z', 'T'];
@@ -257,6 +300,21 @@ tetris.spawn = function(){
     this.currentShape = shapeArray[index];
     this.currentCoor = this.shapeToCoor(this.currentShape, this.origin);
 }
+
+tetris.spawnHeld = function(index){
+	generateQueue();
+    this.origin = {row:2, col:5};
+	console.log("INDEX: " + index);
+    var colorArray = ['#0102F0','#F09F02','#01F0F1','#F0F001','#00FF01', 'F00100','A001EF'];
+	var shapeArray = ['J', 'L', 'I', 'O', 'S','Z', 'T'];
+	
+	this.color = colorArray[index];
+    this.currentShape = shapeArray[index];
+	this.currentCoor = this.shapeToCoor(this.currentShape, this.origin);
+	
+
+}
+
 
 var queue = [];
 var bag = [];
@@ -292,8 +350,8 @@ generateQueue = function(){
 		$('td#next.third').attr('background', 'tetromino' + queue[3] +'.png');
 
 
-	console.log("BAG: " + bag);
-	console.log("QUEUE: " + queue);
+	//console.log("BAG: " + bag);
+	//console.log("QUEUE: " + queue);
 }
 
 //If we need to reverse
@@ -333,8 +391,12 @@ tetris.emptyFullRow = function(){
 
 		if(rowIsFull){
 			drops++;
+			linesCleared++;
+			$('p#linesCleared').text("Lines Cleared: " + linesCleared);
+
 		}
 	}
+
 }
 
 
@@ -352,6 +414,10 @@ $(document).ready(function(){
 		} else if (e.keyCode === 40){
 			tetris.drop();
 			clearInterval(autoplay);
+		}
+		else if(e.keyCode === 67){
+			tetris.hold();
+			console.log("HOLD!");
 		}
 
 	})
