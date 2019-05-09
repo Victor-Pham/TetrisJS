@@ -302,7 +302,6 @@ tetris.spawn = function(){
 }
 
 tetris.spawnHeld = function(index){
-	generateQueue();
     this.origin = {row:2, col:5};
 	console.log("INDEX: " + index);
     var colorArray = ['#0102F0','#F09F02','#01F0F1','#F0F001','#00FF01', 'F00100','A001EF'];
