@@ -491,17 +491,16 @@ autoplay = function(){
 		tetris.generateBestMove();
 	//console.log("BEST COL: " + bestCol);
 	}
+	else if(tetris.currentShape != bestRotation){
+			tetris.rotate();
+		}
 	else{
 		//console.log("DONE>>> SPAWNING");
 		if(tetris.origin.col > bestCol)
 			tetris.move('left');
 		else if(tetris.origin.col < bestCol)
 			tetris.move('right');
-		else{
-			if(tetris.currentShape != bestRotation){
-				tetris.rotate();
-			}
-		}
+
 	}
 	var play = 0;
 	play = 0;// Math.floor(Math.random() * 3 + 1);
@@ -572,10 +571,16 @@ getMoveRating = function(){
 	//	}
 	//}
 	for(var i=0;i<tetris.testCoor.length;i++){
-		rating  += tetris.testCoor[i].row;
-
-
+		row = tetris.testCoor[i].row;
+		col = tetris.testCoor[i].col;
+		rating  += row
+		if($('.'+(row + 1)).find("#"+col).attr('bgcolor') == ''){
+			rating -= row;
+			console.log("hole");
+		}
 	}
+	console.log("[" +tetris.testCurrentShape + "]  " + tetris.testOrigin.col + " === " + rating);
+
 	return rating;
 }
 
@@ -631,7 +636,7 @@ tetris.ifReverseTest = function(){
 			var row = this.testCoor[i].row;
 			var col = this.testCoor[i].col;
 			var $coor = $('.'+row).find('#'+col);
-			if(row == 22 || $coor.attr('abbr') === 'block'){
+			if(row == 22 || $coor.attr('abbr') === 'block'|| col < 0 || col > 9){
 				return true;
 				
 			}
