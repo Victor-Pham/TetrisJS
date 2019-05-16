@@ -295,7 +295,7 @@ tetris.spawn = function(){
 	var random = Math.floor(Math.random()*7);
 	var index = queue.shift();
 	this.index = index;
-	console.log("INDEX: " + index);
+	//console.log("INDEX: " + index);
     var colorArray = ['#0102F0','#F09F02','#01F0F1','#F0F001','#00FF01', 'F00100','A001EF'];
 	var shapeArray = ['J', 'L', 'I', 'O', 'S','Z', 'T'];
 	
@@ -407,6 +407,8 @@ tetris.emptyFullRow = function(){
 
 }
 
+gravityRate = 270;
+autoplayRate = 10;
 
 $(document).ready(function(){
 	tetris.drawPlayField();
@@ -439,13 +441,13 @@ $(document).ready(function(){
 			clearInterval(autoplayer)
 			clearInterval(gravity);
 			autoplayEnabled = false;
-			gravity = setInterval(function(){tetris.drop();}, rate);
+			gravity = setInterval(function(){tetris.drop();}, gravityRate);
 		}
 		else{
-			autoplayer = setInterval(autoplay, 10);
+			autoplayer = setInterval(autoplay, autoplayRate);
 			autoplayEnabled = true;
 			clearInterval(gravity);
-			gravity = setInterval(function(){tetris.drop();}, 10);
+			gravity = setInterval(function(){tetris.drop();}, autoplayRate);
 
 
 		}
@@ -560,13 +562,21 @@ tetris.generateBestMove = function(){
 
 	$('p#linesCleared').text("Lines Cleared: " + linesCleared);
 
-	console.log("HIGHEST RATING: " + highestRating + " BEST COL: " + bestCol);
-	console.log("BEST ROTATION: " + bestRotation);
+
+	//console.log("HIGHEST RATING: " + highestRating + " BEST COL: " + bestCol);
+
+	//console.log("BEST ROTATION: " + bestRotation);
 
 	
 
 }
 
+
+holeWeight = 1;
+setHoleWeight = function(weight){
+	holeWeight = weight;
+	console.log(holeWeight);
+}
 getMoveRating = function(){
 	var rating = 0;	//generates rating based on average height of blocks
 	//console.log(".......");
@@ -583,7 +593,9 @@ getMoveRating = function(){
 		col = tetris.testCoor[i].col;
 		rating  += row
 		if($('.'+(row + 1)).find("#"+col).attr('bgcolor') == ''){
-			rating -= row;
+			holeWeight = 1.24
+			console.log(holeWeight);
+			rating -= row * holeWeight;
 			$('.'+(row + 1)).find("#"+col).attr('bgcolor', '#ef7373');
 			$('.'+(row + 1)).find("#"+col).attr('bgcolor', '');
 
