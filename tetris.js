@@ -384,10 +384,16 @@ tetris.emptyFullRow = function(){
 			if(drops>0){
 				var $newCoor = $('.'+(i+drops)).find('#'+j);
                 $newCoor.attr('bgcolor',$coor.attr('bgcolor'));
-                if($newCoor.attr('bgcolor') == ''){
+                if($newCoor.attr('bgcolor') == null || $newCoor.attr('bgcolor') == ''){
                     $newCoor.attr('background', '');
-                    $newCoor.attr('abbr', '');
-                }
+					$newCoor.attr('abbr', '');
+
+				}
+				else{
+
+					$newCoor.attr('background', 'block4.png');
+					$newCoor.attr('abbr', 'block');
+				}
 			}
 		}
 
@@ -436,10 +442,10 @@ $(document).ready(function(){
 			gravity = setInterval(function(){tetris.drop();}, rate);
 		}
 		else{
-			autoplayer = setInterval(autoplay, 50);
+			autoplayer = setInterval(autoplay, 10);
 			autoplayEnabled = true;
 			clearInterval(gravity);
-			gravity = setInterval(function(){tetris.drop();}, 50);
+			gravity = setInterval(function(){tetris.drop();}, 10);
 
 
 		}
@@ -552,6 +558,8 @@ tetris.generateBestMove = function(){
 		tetris.testCurrentShape = tetris.currentShape;
 	}
 
+	$('p#linesCleared').text("Lines Cleared: " + linesCleared);
+
 	console.log("HIGHEST RATING: " + highestRating + " BEST COL: " + bestCol);
 	console.log("BEST ROTATION: " + bestRotation);
 
@@ -576,10 +584,17 @@ getMoveRating = function(){
 		rating  += row
 		if($('.'+(row + 1)).find("#"+col).attr('bgcolor') == ''){
 			rating -= row;
-			console.log("hole");
+			$('.'+(row + 1)).find("#"+col).attr('bgcolor', '#ef7373');
+			$('.'+(row + 1)).find("#"+col).attr('bgcolor', '');
+
+
+			//console.log("hole");
 		}
 	}
-	console.log("[" +tetris.testCurrentShape + "]  " + tetris.testOrigin.col + " === " + rating);
+	$('p#linesCleared').text("Move Rating: " + rating);
+
+
+	//console.log("[" +tetris.testCurrentShape + "]  " + tetris.testOrigin.col + " === " + rating);
 
 	return rating;
 }
@@ -618,6 +633,9 @@ tetris.dropTest = function(){
 				highestRating = rating;
 				bestCol = this.testOrigin.col;
 				bestRotation = this.testCurrentShape;
+				this.fillCellsTest(this.testCoor, '#59ff00');
+				this.fillCellsTest(this.testCoor, '');
+
 			}
 			//console.log("RATING: " + rating + " COL: " + bestCol);
 			this.testOrigin.col++;
