@@ -408,7 +408,7 @@ tetris.emptyFullRow = function(){
 }
 
 gravityRate = 270;
-autoplayRate = 10;
+autoplayRate = 15;
 
 $(document).ready(function(){
 	tetris.drawPlayField();
@@ -551,8 +551,15 @@ tetris.generateBestMove = function(){
 	//store location with highest moveRating
 	highestRating = 0;
 
-	var rating;
-	for(var i = 0; i < 4; i++){
+	var numShapes = 4;
+	if(this.currentShape == 'I' || this.currentShape == 'S' || this.currentShape == 'Z'){
+		numShapes = 2;
+	}
+	else if(this.currentShape == 'O'){
+		numShapes = 1;
+	}
+	
+	for(var i = 0; i < numShapes; i++){
 		tetris.spawnTestPiece(0);
 
 		tetris.dropTest();
@@ -571,13 +578,19 @@ tetris.generateBestMove = function(){
 
 }
 
+var debug = true;
+
+setDebug = function(x){
+	debug = x;
+	console.log(debug);
+}
 
 holeWeight = 1;
 setHoleWeight = function(weight){
 	holeWeight = weight;
 	console.log(holeWeight);
 }
-getMoveRating = function(){
+tetris.getMoveRating = function(){
 	var rating = 0;	//generates rating based on average height of blocks
 	//console.log(".......");
 	//for (var row =21; row>=tetris.testOrigin.row - 5;row--){
@@ -588,16 +601,14 @@ getMoveRating = function(){
 	//		}
 	//	}
 	//}
-	for(var i=0;i<tetris.testCoor.length;i++){
-		row = tetris.testCoor[i].row;
-		col = tetris.testCoor[i].col;
+	for(var i=0;i<this.testCoor.length;i++){
+		row = this.testCoor[i].row;
+		col = this.testCoor[i].col;
 		rating  += row
 		if($('.'+(row + 1)).find("#"+col).attr('bgcolor') == ''){
-			holeWeight = 1.24
-			console.log(holeWeight);
+			holeWeight = 1.0
+			//console.log(holeWeight);
 			rating -= row * holeWeight;
-			$('.'+(row + 1)).find("#"+col).attr('bgcolor', '#ef7373');
-			$('.'+(row + 1)).find("#"+col).attr('bgcolor', '');
 
 
 			//console.log("hole");
@@ -638,15 +649,17 @@ tetris.dropTest = function(){
 
 		if(reverse){
 			this.fillCellsTest(this.testCoor, 'black');
-			rating = getMoveRating();
+			rating = this.getMoveRating();
 			this.fillCells(this.testCoor, '');
 
 			if(rating > highestRating){
 				highestRating = rating;
 				bestCol = this.testOrigin.col;
 				bestRotation = this.testCurrentShape;
-				this.fillCellsTest(this.testCoor, '#59ff00');
-				this.fillCellsTest(this.testCoor, '');
+				if(debug){
+					this.fillCellsTest(this.testCoor, '#59ff00');
+					this.fillCellsTest(this.testCoor, '');
+				}
 
 			}
 			//console.log("RATING: " + rating + " COL: " + bestCol);
